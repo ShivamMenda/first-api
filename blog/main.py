@@ -21,7 +21,12 @@ You can **Create**, **Read**, **Update** and **Delete** blogs.
 You will be able to:
 
 * **Create users**.
+
 * **Read users**.
+
+* **Update user Info**
+
+* **Delete users**.
 """
 
 app=FastAPI(title="BlogAPI",
@@ -76,7 +81,10 @@ def show(id,response:Response,db: Session=Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Blog with id {id} not found")
     return blogs
 
-
+@app.get('/users',response_model=List[schemas.UserOut],tags=['Users']) #Read all
+def all(db: Session=Depends(get_db)):
+    users=db.query(models.User).all()
+    return users
 
 @app.post('/user',response_model=schemas.UserOut,tags=['Users'])
 def create_user(request:schemas.User,db: Session=Depends(get_db)):
@@ -92,3 +100,21 @@ def get_user(id:int,db: Session=Depends(get_db)):
     if not users:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with id {id} not found")
     return users
+
+@app.delete('/user/{id}',status_code=status.HTTP_204_NO_CONTENT,tags=['Users'])
+def delete_user(id,db: Session=Depends(get_db)):
+    user=db.query(models.User).filter(models.User.id==id)
+    if not user.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with id {id} not found")
+    user.delete(synchronize_session=False)
+    db.commit()
+    return {'done'}
+
+@app.put('/user/{id}',status_code=status.HTTP_202_ACCEPTED,tags=['Users'])
+def update(id,request:schemas.UserUpdate,db: Session=Depends(get_db)):
+    user=db.query(models.User).filter(models.User.id==id)
+    if not user.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with id {id} not found")
+    user.update(request.dict())
+    db.commit()
+    return 'updated successfully'

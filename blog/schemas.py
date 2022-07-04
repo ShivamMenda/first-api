@@ -28,3 +28,8 @@ class ShowBlog(BaseModel):
     creator:UserOut
     class Config():
         orm_mode=True
+class UserUpdate(BaseModel):
+    name:str
+    email:str
+    class Config():
+        orm_mode=True
