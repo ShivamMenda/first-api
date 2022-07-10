@@ -1,8 +1,8 @@
 from fastapi import APIRouter,Depends,status,HTTPException,Response
 from blog.oauth2 import get_current_user
-from .. import schemas,models
+from blog import schemas,models
 from typing import List
-from .. import database
+from blog import database
 from sqlalchemy.orm import Session
 get_db=database.get_db
 router=APIRouter(

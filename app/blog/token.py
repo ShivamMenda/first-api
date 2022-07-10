@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 from jose import JWTError,jwt
-from . import schemas
+from blog import schemas
 
 from blog.schemas import TokenData
 
