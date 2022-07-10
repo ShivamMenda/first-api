@@ -18,9 +18,6 @@ You will be able to:
 
 * **Read users**.
 
-* **Update user Info**
-
-* **Delete users**.
 """
 
 app=FastAPI(title="BlogAPI",
